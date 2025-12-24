@@ -2,19 +2,21 @@ import Typed from "typed.js";
 import { tsParticles } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 
+const identityElement = document.querySelector(".text-indentity");
+
+const typed = new Typed(identityElement, {
+  strings: [
+    "Fullstack Developer",
+    "Software Engineer",
+    "Junior Web Developer",
+    "Tech Enthusiast",
+  ],
+  typeSpeed: 60,
+  backSpeed: 60,
+  loop: true,
+});
+
 window.addEventListener("DOMContentLoaded", async () => {
-  const identityElement = document.querySelector(".text-indentity");
-
-  const typed = new Typed(identityElement, {
-    strings: [
-      "Fullstack Developer",
-      "Software Engineer",
-      "Junior Web Developer",
-      "Tech Enthusiast",
-    ],
-    typeSpeed: 60,
-  });
-
   await loadSlim(tsParticles);
 
   await tsParticles.load({
@@ -24,7 +26,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         number: { value: 80 },
         color: { value: "#000000" },
         opacity: { value: 0.5 },
-        zIndex : { value: -1 },
+        zIndex: { value: -1 },
         size: { value: 3 },
         links: {
           enable: true,
