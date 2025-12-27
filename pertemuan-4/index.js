@@ -1,9 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 // array
-var data = ["apple", "banana", "cherry"];
+const data = ["apple", "banana", "cherry"];
 //tupple
-var data2 = [1, "hello", true];
+const data2 = [1, "hello", true];
 // literal
-var gender = "male";
+const gender = "male";
 // union
-var number = "23";
-// 
+const number = "23";
+//  
+//# sourceMappingURL=index.js.map
