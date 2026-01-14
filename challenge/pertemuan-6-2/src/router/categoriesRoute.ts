@@ -1,5 +1,7 @@
 import { Hono } from "hono";
 import { prisma } from "../utils/prisma.js";
+import { zValidator }  from "@hono/zod-validator"
+import { categoryValidation } from "../validation/categoriesValidation.js";
 
 export const categoriesRoutes = new Hono()
     .get("/", async(e) => {
@@ -12,7 +14,7 @@ export const categoriesRoutes = new Hono()
             return e.json({ data : categories }, 200)
         } catch (error) {
             console.log({message : "Failed listing categories"}, error)
-            return e.json({message : "Failed lisitng categories"}, 500)
+            return e.json({message : "Failed listing categories"}, 500)
         }
     })
     .get("/:id", async(e) => {
@@ -32,9 +34,9 @@ export const categoriesRoutes = new Hono()
             return e.json({ message: `Failed listing categories id : ${categoryId}` }, 500);
         }
     })
-    .post("/", async(e) => {
+    .post("/", zValidator("json", categoryValidation) ,async(e) => {
         try {
-            const body = await e.req.json()
+            const body = await e.req.valid("json")
             const category = await prisma.category.create({
                 data : {
                     name : body.name,
@@ -46,10 +48,10 @@ export const categoriesRoutes = new Hono()
             return e.json({message : "Failed create category"}, 500)
         }
     })
-    .patch("/:id", async(e) => {
+    .patch("/:id", zValidator("json", categoryValidation) ,async(e) => {
         const categoryId = e.req.param("id");
         try {
-            const body = await e.req.json()
+            const body = await e.req.valid("json")
             const newCategory = await prisma.category.update({
                 where :{
                     id : categoryId
@@ -58,7 +60,7 @@ export const categoriesRoutes = new Hono()
                     name : body.name
                 }
             })
-            return e.json({ data : newCategory })
+            return e.json({ data : newCategory }, 200)
         } catch (error) {
             console.log(
               { message: `Failed update categories id : ${categoryId}` },

@@ -1,5 +1,7 @@
 import { Hono } from "hono";
 import { prisma } from "../utils/prisma.js";
+import { zValidator } from "@hono/zod-validator";
+import { usersValidation } from "../validation/usersValidation.js";
 
 export const usersRoutes = new Hono()
     .get("/", async(e) => {
@@ -12,7 +14,7 @@ export const usersRoutes = new Hono()
             return e.json({ data : users }, 200)
         } catch (error) {
             console.log({message : "Failed listing users"}, error)
-            return e.json({message : "Failed lisitng users"}, 500)
+            return e.json({message : "Failed listing users"}, 500)
         }
     })
     .get("/:id", async(e) => {
@@ -32,9 +34,9 @@ export const usersRoutes = new Hono()
             return e.json({ message: `Failed listing users id : ${userId}` }, 500);
         }
     })
-    .post("/", async(e) => {
+    .post("/", zValidator("json", usersValidation) ,async(e) => {
         try {
-            const body = await e.req.json()
+            const body = await e.req.valid("json")
             const user = await prisma.user.create({
                 data : {
                     name : body.name,
@@ -47,10 +49,10 @@ export const usersRoutes = new Hono()
             return e.json({message : "Failed create user"}, 500)
         }
     })
-    .patch("/:id", async(e) => {
+    .patch("/:id", zValidator("json", usersValidation), async(e) => {
         const userId = e.req.param("id");
         try {
-            const body = await e.req.json()
+            const body = await e.req.valid("json")
             const newuser = await prisma.user.update({
               where: {
                 id: userId,
@@ -60,7 +62,7 @@ export const usersRoutes = new Hono()
                 email: body.email,
               },
             });
-            return e.json({ data : newuser })
+            return e.json({ data : newuser }, 200)
         } catch (error) {
             console.log(
               { message: `Failed update users id : ${userId}` },

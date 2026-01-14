@@ -1,5 +1,7 @@
 import { Hono } from "hono";
 import { prisma } from "../utils/prisma.js";
+import { zValidator } from "@hono/zod-validator";
+import { postsValidation } from "../validation/postsValidation.js";
 
 export const postsRoutes = new Hono()
     .get("/", async(e) => {
@@ -8,7 +10,7 @@ export const postsRoutes = new Hono()
             return e.json({ data : posts }, 200)
         } catch (error) {
             console.log({message : "Failed listing posts"}, error)
-            return e.json({message : "Failed lisitng posts"}, 500)
+            return e.json({message : "Failed listing posts"}, 500)
         }
     })
     .get("/:id", async(e) => {
@@ -25,9 +27,9 @@ export const postsRoutes = new Hono()
             return e.json({ message: `Failed listing posts id : ${postId}` }, 500);
         }
     })
-    .post("/", async(e) => {
+    .post("/", zValidator("json", postsValidation) ,async(e) => {
         try {
-            const body = await e.req.json()
+            const body = await e.req.valid("json")
             const post = await prisma.post.create({
                 data : {
                     title : body.title,
@@ -43,10 +45,10 @@ export const postsRoutes = new Hono()
             return e.json({message : "Failed create post"}, 500)
         }
     })
-    .patch("/:id", async(e) => {
+    .patch("/:id", zValidator("json", postsValidation) ,async(e) => {
         const postId = e.req.param("id");
         try {
-            const body = await e.req.json()
+            const body = await e.req.valid("json")
             const newpost = await prisma.post.update({
               where: {
                 id: postId,
@@ -59,7 +61,7 @@ export const postsRoutes = new Hono()
                 categoryId: body.categoryId,
               },
             });
-            return e.json({ data : newpost })
+            return e.json({ data : newpost }, 200)
         } catch (error) {
             console.log(
               { message: `Failed update posts id : ${postId}` },
