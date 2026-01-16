@@ -51,7 +51,7 @@ export const authRoute = new Hono()
             throw new HTTPException(404, { message: "Password war wrong" });
         }
 
-        const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET!)
+        const token = jwt.sign({ sub: existingUser.id }, process.env.JWT_SECRET!)
 
         return c.json({message : "Login Sucessfull", token})
     })

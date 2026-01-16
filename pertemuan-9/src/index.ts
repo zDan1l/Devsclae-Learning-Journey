@@ -3,6 +3,7 @@ import { Hono } from 'hono'
 import { authRoute } from './modules/auth/route.js'
 import "dotenv/config"
 import { productRoute } from './modules/products/route.js'
+import { reviewtRoute } from './modules/review/route.js'
 
 const app = new Hono()
 
@@ -12,6 +13,7 @@ app.get('/', (c) => {
 
 app.route("/auth", authRoute)
 app.route("/products", productRoute)
+app.route("/reviews", reviewtRoute)
 
 serve({
   fetch: app.fetch,
