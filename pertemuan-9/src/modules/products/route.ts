@@ -12,7 +12,7 @@ export const productRoute = new Hono<{ Variables : {
     .get("/", async(c) => {
         const user = c.get("user");
         console.log(user)
-        return c.json({products : []})
+        return c.json({products : [], user})
     })
     .get("/:id", async(c) => {
         return c.json({products : []})
