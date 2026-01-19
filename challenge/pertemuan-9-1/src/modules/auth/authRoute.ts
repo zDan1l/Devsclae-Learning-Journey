@@ -27,7 +27,10 @@ export const authRoute = new Hono()
                 password : await hashedPw(body.password)
             }
         })
-        return c.json({message : "Sucessful Register", newUser})
+        return c.json({message : "Sucessful Register", user: {
+            id: newUser.id,
+            email : newUser.email
+        }})
     })
     .post("/login", zValidator("json", loginSchema) ,async(c) => {
         const body = c.req.valid("json");
@@ -38,17 +41,62 @@ export const authRoute = new Hono()
         });
 
         if (!existUser) {
-          throw new HTTPException(409, { message: "User not found" });
+          throw new HTTPException(404, { message: "User not found" });
         }
 
-        const isPwValid = comparePw(body.password, existUser.password)
+        const isPwValid = await comparePw(body.password, existUser.password)
 
         if(!isPwValid){
-            throw new HTTPException(409, { message: "Email or Password is wrong" });
+            throw new HTTPException(401, { message: "Email or Password is wrong" });
         }
 
         // pemberian token
-        const token  = jwt.sign({sub : existUser.id}, process.env.JWT_SECRET!)
+        const token  = jwt.sign({sub : existUser.id}, process.env.JWT_SECRET!, {expiresIn : '20m'})
+
+        // generate refresh token buat cadangan
+        const refreshToken = jwt.sign({sub : existUser.id}, process.env.JWT_REFRESH_SECRET!, {expiresIn: '1d'})
+ 
+        await prisma.user.update({
+            where: {
+                id: existUser.id,
+            },
+            data : {
+                refreshToken
+            }
+        })
+        
+        return c.json({message : "Sucessfull Login", token, refreshToken})
+    })
+    .post("/refresh", async(c) => {
+        const {refreshToken} = await c.req.json()
+
+        // verify refresh token
+        try {
+            const payload = jwt.verify(
+              refreshToken,
+              process.env.JWT_REFRESH_SECRET!,
+            );
+            // cek di database
+            const user = await prisma.user.findFirst({
+                where : {
+                    id : String (payload.sub),
+                    refreshToken : refreshToken
+                }
+            })
     
-        return c.json({message : "Sucessfull Login", token})
+            // jika tidak cocok throw error
+            if(!user) {
+                throw new HTTPException(401, {message : "Invalid refresh token"})
+            }
+    
+            const newToken = jwt.sign({sub : user.id}, process.env.JWT_SECRET!, {expiresIn : "20m"})
+            return c.json({newToken : newToken})
+        } catch (error) {
+            if (error instanceof Error && error.name === "TokenExpiredError") {
+              throw new HTTPException(401, {
+                message: "Refresh token expired",
+              });
+            }
+            throw new HTTPException(401, {message : "Invalid token"})
+        }
     })
