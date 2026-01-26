@@ -2,7 +2,7 @@ import { Dashboard } from "@/components/dahboard";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/sidebar";
 import { createFileRoute } from "@tanstack/react-router";
-import { useHydrateAtoms } from "jotai/utils";
+import { useHydrateAtoms } from "jotai/utils";cd .
 import { userAtom } from "@/atoms/userAtom";
 
  
