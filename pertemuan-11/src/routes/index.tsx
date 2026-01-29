@@ -1,31 +1,32 @@
-import { Dashboard } from "@/components/dahboard";
-import { Header } from "@/components/Header";
-import { Sidebar } from "@/components/sidebar";
-import { createFileRoute } from "@tanstack/react-router";
-import { useHydrateAtoms } from "jotai/utils";cd .
-import { userAtom } from "@/atoms/userAtom";
+import { productAtom } from '@/atoms/productsAtoms';
+import { Cart } from '@/components/cart';
+import { Products } from '@/components/productList';
+import { TotalProduct } from '@/components/totalProduct';
+import { createFileRoute } from '@tanstack/react-router'
+import {useHydrateAtoms} from "jotai/utils"
 
- 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute('/')({
   component: RouteComponent,
-  loader : (() => {
-    return {
-      username : "danil"
+  loader : async() => {
+    const res = await fetch("https://fakestoreapi.com/products");
+    if(!res.ok){
+      throw new Error("Failed load products")
     }
-
-  })
-});
+    const data = await res.json()
+    return data;
+  }
+})
 
 function RouteComponent() {
-  const data = Route.useLoaderData()
-  useHydrateAtoms([[userAtom, {username : data.username}]])
-  return (
-      <div className="font-sans h-screen">
-        <Header />
-        <div className="flex h-full">
-          <Sidebar />
-          <Dashboard />
-        </div>
-      </div>
-  );
+  const produts = Route.useLoaderData()
+  useHydrateAtoms([[productAtom, produts]])
+  return ( 
+  <div className='grid grid-cols-2 gap-2'>
+    <Products />
+    <div className='p-4'>
+      <Cart />
+      <TotalProduct />
+    </div>
+  </div>
+  )
 }
