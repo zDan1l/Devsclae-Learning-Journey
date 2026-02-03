@@ -10,11 +10,11 @@ function RouteComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const {mutate: submitRegister, isPending}= useRegister()
+  const { mutate: submitRegister, isPending } = useRegister();
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    submitRegister({email, password})
+    submitRegister({ email, password });
   }
 
   return (
@@ -36,17 +36,14 @@ function RouteComponent() {
             placeholder="password"
           />
         </section>
-        <button
-          className="hover:cursor-pointer"
-          type="submit"
-          >
+        <button className="hover:cursor-pointer" type="submit">
           {isPending ? "Registering.." : "Register"}
         </button>
-      <section>
-              <p>
-                Have an account ? <Link to="/login">Login</Link>
-              </p>
-            </section>
+        <section>
+          <p>
+            Have an account ? <Link to="/login">Login</Link>
+          </p>
+        </section>
       </form>
     </div>
   );

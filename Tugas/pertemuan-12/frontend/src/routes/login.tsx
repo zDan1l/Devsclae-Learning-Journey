@@ -1,8 +1,8 @@
-import { useRegister } from "@/modules/auth/hooks/useRegister";
+import { useLogin } from "@/modules/auth/hooks/useLogin";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import React, { useState } from "react";
+import { useState } from "react";
 
-export const Route = createFileRoute("/register")({
+export const Route = createFileRoute("/login")({
   component: RouteComponent,
 });
 
@@ -10,19 +10,19 @@ function RouteComponent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const {mutate: submitRegister, isPending}= useRegister()
+  const { mutate: submitLogin, isPending } = useLogin();
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    submitRegister({email, password})
+    submitLogin({ email, password });
   }
 
   return (
     <div className="flex h-screen justify-center items-center">
       <form className="w-[300] space-y-6" onSubmit={handleSubmit}>
         <section className="text-center">
-          <h3>SignUp</h3>
-          <p>Creata account to continue</p>
+          <h3>Sign in</h3>
+          <p>Sign in account to continue</p>
         </section>
         <section className="space-y-2">
           <input
@@ -36,17 +36,14 @@ function RouteComponent() {
             placeholder="password"
           />
         </section>
-        <button
-          className="hover:cursor-pointer"
-          type="submit"
-          >
-          {isPending ? "Registering.." : "Register"}
+        <button className="hover:cursor-pointer" type="submit">
+          {isPending ? "Logging in.." : "Login"}
         </button>
-      <section>
-              <p>
-                Have an account ? <Link to="/login">Login</Link>
-              </p>
-            </section>
+        <section>
+          <p>
+            Don't have an account ? <Link to="/register">Register</Link>
+          </p>
+        </section>
       </form>
     </div>
   );

@@ -14,7 +14,10 @@ code {
     monospace;
 }
 
-@layer base {
+@layer {
+  h6 {
+    @apply font-medium text-xl
+  }
   input {
     @apply border border-zinc-200 shadow shadow-zinc-100 p-2  w-full rounded-xl;
   }
