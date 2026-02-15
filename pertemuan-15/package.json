@@ -1,0 +1,27 @@
+{
+	"name": "pertemuan-15",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"api:dev": "pnpm run --filter=api dev",
+		"admin:dev": "pnpm run --filter=admin dev",
+		"platform:dev": "pnpm run --filter=platform dev",
+		"dev": "pnpm -r --parallel --filter=api --filter=platform run dev",
+		"lint": "pnpm exec biome check",
+		"lint:fix": "pnpm exec biome check --write --unsafe",
+		"prepare": "husky"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.28.0",
+	"devDependencies": {
+		"@biomejs/biome": "2.3.15",
+		"@moonrepo/cli": "^1.41.7",
+		"husky": "^9.1.7"
+	},
+	"dependencies": {
+		"dotenv-cli": "^11.0.0"
+	}
+}

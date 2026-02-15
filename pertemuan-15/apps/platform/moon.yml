@@ -1,0 +1,6 @@
+id: platform
+language: javascript
+
+tasks:
+  dev:
+    command: "pnpm run dev"

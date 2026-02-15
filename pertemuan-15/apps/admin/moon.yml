@@ -1,0 +1,6 @@
+id: admin
+language: javascript
+
+tasks:
+  dev:
+    command: "pnpm run dev"

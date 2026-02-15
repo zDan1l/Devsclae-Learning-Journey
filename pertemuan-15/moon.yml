@@ -1,0 +1,4 @@
+tasks :
+  dev:
+    command: "moon run :dev"
+    description: "Start development servers for all projects"
